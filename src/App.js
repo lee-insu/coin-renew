@@ -1,14 +1,18 @@
 import './app.css';
-import CoinPrice from './components/coin_price/coin_price';
+import CoinInfo from './components/coin_info/coin_info';
 import Header from './components/header/header';
-import SelectCoin from './components/select_coin/select_coin';
+import Auth from './components/auth_firebase/auth_firebase';
+
 
 function App() {
+
+
+
   return (
     <div className="App">
-      <Header />
-      <SelectCoin />
-      <CoinPrice/>
+      <Header/>
+      <CoinInfo/>
+      <Auth/>
     </div>
   );
 }
