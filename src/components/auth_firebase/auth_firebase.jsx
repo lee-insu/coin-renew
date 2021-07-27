@@ -6,7 +6,7 @@ const Auth = () => {
     
     const [email,setEmail] = useState();
     const [password, setPassword] = useState();
-    const [newAccount, setNewAccount] =useState(true); 
+    const [newAccount, setNewAccount] =useState(false); 
 
  
     const onChange = e => {
@@ -63,7 +63,7 @@ const Auth = () => {
             />
             <input type="submit" value={newAccount ? "create Account":"login"}/>
         </form>
-
+        
         <div>
             <button onClick={googleLogin}>login with google</button>
         </div>

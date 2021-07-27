@@ -1,6 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { firebaseAuth } from '../../service/firebase';
 
 const Header = () => {
+
+    const auth = firebaseAuth;
+    const [login,setLogin] = useState(false);
+    const logout = () => {
+        auth.signOut();
+    }
+
+    useEffect(()=> {
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                setLogin(true);
+            }else{
+                setLogin(false);
+            }
+        })
+    },[])
+
+
 
     return (
         <div className="header">
@@ -10,10 +30,21 @@ const Header = () => {
                 <li>투자지표</li>
                 <li>자유토론방</li>
             </ul>
+            
             <ul>
-                <li>로그인</li>
-                <li>회원가입</li>
+                <li><Link to="/login">login</Link></li>
+                <li><Link to="/signup">register</Link></li>
             </ul>
+            {login ? 
+                <div>
+                    <div>안녕하세여</div>
+                    <button onClick={logout}>logout</button> 
+                </div> :
+                <div></div>
+            }
+   
+
+
         </nav>
         </div>
         
