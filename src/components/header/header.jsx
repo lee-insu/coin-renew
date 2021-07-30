@@ -28,7 +28,7 @@ const Header = () => {
         <nav>
             <ul>
                 <li>투자지표</li>
-                <li>자유토론방</li>
+                <li><Link to="/board">자유토론방</Link></li>
             </ul>
             
             <ul>
