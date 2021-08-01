@@ -7,8 +7,10 @@ const Register = () => {
 
     const [email,setEmail] = useState();
     const [password,setPassword] = useState();
-    const [err,getErr] = useState();
+    const [nickname,setNickname] = useState();
+    const [err,getErr] = useState("");
     const history = useHistory();
+
 
     const onChange = e => {
         const {target:{name,value}} = e;
@@ -16,6 +18,8 @@ const Register = () => {
             setEmail(value);
         }else if (name === 'password') {
             setPassword(value);
+        }else if (name === 'nickname') {
+            setNickname(value);
         }
 
     }
@@ -23,7 +27,9 @@ const Register = () => {
     const onSubmit = async(e) => {
         e.preventDefault();
         try {
-            await firebaseAuth.createUserWithEmailAndPassword(email,password)
+            await firebaseAuth.createUserWithEmailAndPassword(email,password).then(result => {
+                result.user.updateProfile({displayName:nickname})
+            })
             history.push('/')
         } catch(err) {
             getErr("register err" + err)
@@ -36,12 +42,13 @@ const Register = () => {
         <>
         <form onSubmit={onSubmit}>
             <input 
-            type="text"
+            type="email"
             name="email"
             placeholder="please write your email"
             required
             value={email}
             onChange={onChange}
+            required
             />
 
             <input 
@@ -51,6 +58,17 @@ const Register = () => {
             required
             value={password || ""}
             onChange={onChange}
+            required
+            />
+
+            <input 
+            type="text"
+            name="nickname"
+            placeholder="please write your nickname"
+            required
+            value={nickname}
+            onChange={onChange}
+            required
 
             />
             <input type="submit" value="sign up"/>

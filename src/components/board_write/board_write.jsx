@@ -1,4 +1,4 @@
-import React,{ useRef, useState } from 'react';
+import React,{ useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 
@@ -26,7 +26,7 @@ const BoardWrite = () => {
         alert("success!")
         history.push('/board');
     }catch(err) {
-        alert(`board err ${err}`)
+        alert(`board err ${err}`)  
     }
     }
 
@@ -48,7 +48,7 @@ const BoardWrite = () => {
             type="text"
             name="title"
             value={title}
-            placeholder="please write header"
+            placeholder="please write title"
             onChange={onChange}
             />
 
