@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {useHistory, useParams } from 'react-router-dom';
 import {firestore} from '../../service/firebase';
+import Chatting from '../chatting/chatting';
 
 
 const BoardView = ({login,userInfo}) => {
 
-
+    const userDoc = userInfo;
     const [title,getTitle] = useState("");
     const [content,getContent] = useState("");
     const [user,getUser] =useState({
@@ -79,6 +80,8 @@ const BoardView = ({login,userInfo}) => {
             <button onClick={onEdit}>edit</button>
             {login && userInfo.uid === user.uid ? 
             <button onClick={onDelete}>delete</button> : null }
+
+            <Chatting userInfo={userDoc} board = {params.id} />
         </div>
     )
 }

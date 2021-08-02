@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
-import {firebaseAuth} from '../../service/firebase';
+import {firebaseAuth, firestore} from '../../service/firebase';
 
 const Register = () => {
 
@@ -28,7 +27,11 @@ const Register = () => {
         e.preventDefault();
         try {
             await firebaseAuth.createUserWithEmailAndPassword(email,password).then(result=> {
-                result.user.updateProfile({displayName:nickname})
+                result.user.updateProfile({displayName:nickname});
+                firestore.collection("user").doc(result.user.uid).set({
+                    email:email,
+                    name: nickname
+                })
             })
             history.push('/')
         } catch(err) {
