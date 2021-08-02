@@ -2,13 +2,13 @@ import React,{ useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 
-const BoardWrite = () => {
+const BoardWrite = ({userInfo}) => {
 
     const [title,getTitle] = useState("");
     const [content,getContent] = useState("");
 
     const history = useHistory();
-    
+  
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -16,6 +16,8 @@ const BoardWrite = () => {
         await firestore.collection("board").add({
             title,
             content,
+            uid:userInfo.uid,
+            name:userInfo.displayName,
             year:new Date().getFullYear(),
             month:new Date().getMonth()+1,
             date: new Date().getDate()

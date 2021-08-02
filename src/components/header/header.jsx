@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { firebaseAuth } from '../../service/firebase';
 
-const Header = () => {
 
-    const auth = firebaseAuth;
-    const [login,setLogin] = useState(false);
+const Header = ({login,userInfo}) => {
+    
+
     const logout = () => {
-        auth.signOut();
+        firebaseAuth.signOut();
+        window.location.replace("/")
     }
-
-    useEffect(()=> {
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                setLogin(true);
-            }else{
-                setLogin(false);
-            }
-        })
-    },[])
-
 
 
     return (
@@ -31,16 +21,15 @@ const Header = () => {
                 <li><Link to="/board">자유토론방</Link></li>
             </ul>
             
-            <ul>
-                <li><Link to="/login">login</Link></li>
-                <li><Link to="/signup">register</Link></li>
-            </ul>
             {login ? 
                 <div>
-                    <div>안녕하세여</div>
+                    <div>{userInfo.displayName}님 하이루~</div>
                     <button onClick={logout}>logout</button> 
                 </div> :
-                <div></div>
+                <ul>
+                <li><Link to="/login">login</Link></li>
+                <li><Link to="/signup">register</Link></li>
+                </ul>
             }
    
 

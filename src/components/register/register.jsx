@@ -27,7 +27,7 @@ const Register = () => {
     const onSubmit = async(e) => {
         e.preventDefault();
         try {
-            await firebaseAuth.createUserWithEmailAndPassword(email,password).then(result => {
+            await firebaseAuth.createUserWithEmailAndPassword(email,password).then(result=> {
                 result.user.updateProfile({displayName:nickname})
             })
             history.push('/')

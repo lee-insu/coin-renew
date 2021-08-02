@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 
 
-const Board = () => {
+const Board = ({login}) => {
 
     const [board,getBoard] =useState([]);
+    const history = useHistory();
+
+
+
+    const userWrite = () => {
+        if(login) {
+            history.push('/write');
+        }else {
+            alert('please login');
+            history.push('/login');
+        }
+    }
 
 
     useEffect(()=> {
@@ -32,7 +44,7 @@ const Board = () => {
             {boardArray}
         </ul>
 
-        <div><Link to="/write">write</Link></div>
+        <button onClick={userWrite}>write</button>
         </>
         
     )
