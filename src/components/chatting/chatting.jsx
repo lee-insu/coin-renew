@@ -4,11 +4,8 @@ import {firestore} from '../../service/firebase';
 const Chatting = ({userInfo, board}) => {
    
     const [chat,setChat] = useState("");
-    const [comment,getComment] = useState([
-        
+    const [comment,getComment] = useState([]);
 
-    ]);
-    
     
     const onChange = e => {
         const {target:{value}} =e;
@@ -22,10 +19,15 @@ const Chatting = ({userInfo, board}) => {
                 chat,
                 name:userInfo.displayName,
                 uid:userInfo.uid,
+                time:new Date(),
                 year:new Date().getFullYear(),
                 month:new Date().getMonth()+1,
                 date: new Date().getDate()
             })
+            setChat("");
+            alert("comment suc!");
+            
+
         }catch(err) {
             console.log(err);
         }
@@ -33,10 +35,22 @@ const Chatting = ({userInfo, board}) => {
     }
 
 
+    const onDelete = async(cmtId,cmtUid) => {
+        if(cmtUid === userInfo.uid){
+        const del = window.confirm("are you sure you want comment?");
+        if(del) {
+            await firestore.collection("chatting").doc(board).collection("messages").doc(cmtId).delete();
+        }
+        }else {
+            alert("your not writer!")
+        }
+    }
+
+
    
     useEffect(()=> {
         
-        firestore.collection("chatting").doc(board).collection("messages")
+        firestore.collection("chatting").doc(board).collection("messages").orderBy('time')
         .onSnapshot(snapshot => {
             const array = snapshot.docs.map(doc => ({
                 id:doc.id,
@@ -44,25 +58,23 @@ const Chatting = ({userInfo, board}) => {
             }));
             getComment(array);
         })
-    
-        // firestore.collection("chatting").doc(board).collection("messages").get().then(result=>{
-        //    result.forEach(e => {
-        //         let arr=[];
-        //         arr.push(e.data())
-        //         getComment(arr);
-
-        //    })
-        //     })
+     
+       
     },[])
 
-   const comments = comment.map(cmt => <li key={cmt.id}>{cmt.chat}</li>)
 
+
+    
+   const comments = comment.map(cmt => 
+   <li key={cmt.id}>{cmt.chat} writer:{cmt.name} <h3>{cmt.id}</h3> <button onClick={()=>onDelete(cmt.id,cmt.uid)}>del</button></li>
+   )
+   
 
     return (
         <>
-        <ul>
+         <ul>
             {comments}
-        </ul>
+        </ul> 
     
           <form onSubmit ={onSubmit}>
             <input 
