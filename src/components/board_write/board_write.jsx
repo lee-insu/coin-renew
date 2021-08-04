@@ -18,6 +18,7 @@ const BoardWrite = ({userInfo}) => {
             content,
             uid:userInfo.uid,
             name:userInfo.displayName,
+            time:new Date(),
             year:new Date().getFullYear(),
             month:new Date().getMonth()+1,
             date: new Date().getDate()
@@ -52,6 +53,7 @@ const BoardWrite = ({userInfo}) => {
             value={title}
             placeholder="please write title"
             onChange={onChange}
+            required
             />
 
             <input 
@@ -60,6 +62,7 @@ const BoardWrite = ({userInfo}) => {
             value={content}
             placeholder="please write content"
             onChange={onChange}
+            required
             />
 
         <input type="submit" />

@@ -80,8 +80,77 @@ const BoardView = ({login,userInfo}) => {
             <button onClick={onEdit}>edit</button>
             {login && userInfo.uid === user.uid ? 
             <button onClick={onDelete}>delete</button> : null }
-
+            <Like login={login} userInfo={userDoc}/>
             <Chatting userInfo={userDoc} board = {params.id} />
+        </div>
+    )
+}
+
+
+const Like = ({login,userInfo}) => {
+
+    const [like, setLike] = useState(false);
+    const [likeNum,getLikeNum] = useState("");
+
+    const params = useParams();
+    
+    const clickLike = async(e) => {
+        e.preventDefault();
+        if(login) {
+            if(like === false){ 
+                   await firestore.collection("board").doc(`${params.id}`)
+                   .collection("like").doc(`${userInfo.uid}`).set({
+                    like:true,
+                    uid:userInfo.uid
+                   })
+                    setLike(true);
+                    }else {
+                    await firestore.collection("board").doc(`${params.id}`)
+                   .collection("like").doc(`${userInfo.uid}`).delete();
+                   setLike(false);
+                    }
+        }else{
+            alert("please login")
+        }
+            
+    }
+
+
+    if (userInfo) {
+        firestore.collection("board").doc(`${params.id}`).collection("like").get().then(result => {
+            result.forEach(doc => {
+                if(doc.id === userInfo.uid) {
+                    setLike(true);
+                }
+            });
+        })
+    }
+
+
+    useEffect(()=>{
+
+        if(like === false){
+            firestore.collection("board").doc(`${params.id}`)
+            .collection("like").get().then(snap => {
+                let count = snap.size;
+                getLikeNum(count);
+            })
+      }else {
+            firestore.collection("board").doc(`${params.id}`)
+             .collection("like").get().then(snap => {
+            let count = snap.size;
+            getLikeNum(count);
+             })
+      }
+    },[like,login])
+
+
+    return (
+        <div>
+            <button onClick={clickLike}>like</button>
+        <div>{likeNum}</div>
+        {like? <div>true</div>:<div>false</div>}
+
         </div>
     )
 }

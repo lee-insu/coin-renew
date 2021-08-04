@@ -22,10 +22,11 @@ const Board = ({login}) => {
 
     useEffect(()=> {
 
-        firestore.collection("board")
+        firestore.collection("board").orderBy('time','desc')
         .onSnapshot(snapshot => {
             const array = snapshot.docs.map(doc => ({
                 id:doc.id,
+                time:new Date(),
                 ...doc.data()
             }))
             getBoard(array);

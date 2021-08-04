@@ -14,7 +14,8 @@ const BoardEdit = () => {
         e.preventDefault();
         await firestore.collection("board").doc(`${params.id}`).update({
             title:title,
-            content:content
+            content:content,
+            newtime:new Date()
         })
         alert('edit suc!')
         history.push(`/board/${params.id}`)

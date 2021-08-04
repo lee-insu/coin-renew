@@ -15,6 +15,7 @@ const Chatting = ({userInfo, board}) => {
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
+            alert("comment suc!");
             await firestore.collection("chatting").doc(board).collection("messages").add({
                 chat,
                 name:userInfo.displayName,
@@ -25,7 +26,7 @@ const Chatting = ({userInfo, board}) => {
                 date: new Date().getDate()
             })
             setChat("");
-            alert("comment suc!");
+            
             
 
         }catch(err) {
