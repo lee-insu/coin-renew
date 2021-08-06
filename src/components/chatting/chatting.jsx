@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 
 const Chatting = ({userInfo, board}) => {
    
     const [chat,setChat] = useState("");
+    const [reChat,setReChat] = useState("")
     const [comment,getComment] = useState([]);
+    const [reComment,getReComment] = useState([]);
+    const [active,setActive] =useState(false);
+
 
     
     const onChange = e => {
-        const {target:{value}} =e;
+        const {target:{name,value}} =e;
+        if(name === "chat"){
         setChat(value);
+        }else if(name === "rechat") {
+            setReChat(value);
+        }
     }
 
+
     const onSubmit = async (e) => {
+        console.log(e.target.name);
         e.preventDefault();
         try {
             alert("comment suc!");
@@ -35,6 +46,12 @@ const Chatting = ({userInfo, board}) => {
         
     }
 
+    const onActive = e => {
+        e.preventDefault();
+        setActive(true);
+    }
+
+    console.log(active);
 
     const onDelete = async(cmtId,cmtUid) => {
         if(cmtUid === userInfo.uid){
@@ -47,10 +64,9 @@ const Chatting = ({userInfo, board}) => {
         }
     }
 
-
+    
    
     useEffect(()=> {
-        
         firestore.collection("chatting").doc(board).collection("messages").orderBy('time')
         .onSnapshot(snapshot => {
             const array = snapshot.docs.map(doc => ({
@@ -67,7 +83,12 @@ const Chatting = ({userInfo, board}) => {
 
     
    const comments = comment.map(cmt => 
-   <li key={cmt.id}>{cmt.chat} writer:{cmt.name} <h3>{cmt.id}</h3> <button onClick={()=>onDelete(cmt.id,cmt.uid)}>del</button></li>
+   <li key={cmt.id}>
+       {cmt.chat} writer:{cmt.name}
+        <h3>{cmt.id}</h3> 
+        <button onClick={()=>onDelete(cmt.id,cmt.uid)}>del</button>
+        <button onClick={onActive}>rechat</button>
+        </li>
    )
    
 
@@ -76,12 +97,12 @@ const Chatting = ({userInfo, board}) => {
          <ul>
             {comments}
         </ul> 
-    
           <form onSubmit ={onSubmit}>
             <input 
             type="text"
-            placeholder="write chat"
-            value={chat}
+            name ={!active ? "chat" : "rechat"}
+            placeholder={!active ? "please chat" : "please rechat" }
+            value={!active ? chat : reChat}
             onChange={onChange}
             />
             <input type="submit"/>

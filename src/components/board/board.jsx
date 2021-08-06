@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import {firestore} from '../../service/firebase';
+import Search from '../search/search';
 
 
 const Board = ({login}) => {
@@ -36,7 +37,7 @@ const Board = ({login}) => {
     },[])
 
     
-    const boardArray = board.map(bb=><li key={bb.id}><Link to ={`/board/${bb.id}`}><h3>{bb.title}</h3></Link></li>)
+    const boardArray = board.map(bb=><li key={bb.id}><Link to ={`/board/${bb.id}`}><h3>{bb.title}</h3></Link><h4>{bb.views}</h4></li>)
     
     
     return(
@@ -46,6 +47,7 @@ const Board = ({login}) => {
         </ul>
 
         <button onClick={userWrite}>write</button>
+        <Search />
         </>
         
     )

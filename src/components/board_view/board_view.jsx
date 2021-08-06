@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {useHistory, useParams } from 'react-router-dom';
+import firebase from 'firebase/app';
 import {firestore} from '../../service/firebase';
 import Chatting from '../chatting/chatting';
+
+
+
 
 
 const BoardView = ({login,userInfo}) => {
@@ -18,9 +22,11 @@ const BoardView = ({login,userInfo}) => {
         mon:'',
         date:''
     });
-
+    const [views,getViews] = useState("");
     const params = useParams();
     const history = useHistory();
+    
+    const fire = firestore.collection("board").doc(`${params.id}`);
 
 
     const onEdit = () => {
@@ -43,15 +49,24 @@ const BoardView = ({login,userInfo}) => {
     const onDelete = async() => {
         const del = window.confirm("are you sure you want to delete article?");
         if(del) {
-            await firestore.collection("board").doc(`${params.id}`).delete(); 
+            await fire.delete(); 
+          if(del) {
+            await firestore.collection("chatting").doc(`${params.id}`).delete();
+          }
            alert('delete!');
             history.push('/board');
         }
     }
 
 
+    const increment = firebase.firestore.FieldValue.increment(1);
+   
     useEffect(()=> {
-        firestore.collection("board").doc(`${params.id}`).get().then(result=> {
+        fire.update({
+            views:increment
+        })
+
+        fire.get().then(result=> {
             const data = result.data();
             getTitle(data.title);
             getContent(data.content);
@@ -63,7 +78,8 @@ const BoardView = ({login,userInfo}) => {
                year:data.year,
                mon:data.month,
                date:data.date,
-            });
+            })
+            getViews(data.views);
         })
     },[])
 
@@ -76,6 +92,7 @@ const BoardView = ({login,userInfo}) => {
             <h3>{content}</h3>
             <h3>{time.year}년 {time.mon}월 {time.date}일 </h3>
             <h4>{user.name}작성 {user.uid}코드</h4>
+            <h4>{views}</h4>
             </div>
             <button onClick={onEdit}>edit</button>
             {login && userInfo.uid === user.uid ? 
@@ -91,33 +108,33 @@ const Like = ({login,userInfo}) => {
 
     const [like, setLike] = useState(false);
     const [likeNum,getLikeNum] = useState("");
-
     const params = useParams();
+
+    const fire = firestore.collection("board").doc(`${params.id}`);
     
     const clickLike = async(e) => {
         e.preventDefault();
         if(login) {
             if(like === false){ 
-                   await firestore.collection("board").doc(`${params.id}`)
-                   .collection("like").doc(`${userInfo.uid}`).set({
+                   await fire.collection("like").doc(`${userInfo.uid}`).set({
                     like:true,
                     uid:userInfo.uid
                    })
                     setLike(true);
                     }else {
-                    await firestore.collection("board").doc(`${params.id}`)
+                    await fire
                    .collection("like").doc(`${userInfo.uid}`).delete();
                    setLike(false);
                     }
         }else{
-            alert("please login")
+            alert("please login");
         }
             
     }
 
 
     if (userInfo) {
-        firestore.collection("board").doc(`${params.id}`).collection("like").get().then(result => {
+        fire.collection("like").get().then(result => {
             result.forEach(doc => {
                 if(doc.id === userInfo.uid) {
                     setLike(true);
@@ -130,13 +147,13 @@ const Like = ({login,userInfo}) => {
     useEffect(()=>{
 
         if(like === false){
-            firestore.collection("board").doc(`${params.id}`)
+            fire
             .collection("like").get().then(snap => {
                 let count = snap.size;
                 getLikeNum(count);
             })
       }else {
-            firestore.collection("board").doc(`${params.id}`)
+            fire
              .collection("like").get().then(snap => {
             let count = snap.size;
             getLikeNum(count);
@@ -150,7 +167,6 @@ const Like = ({login,userInfo}) => {
             <button onClick={clickLike}>like</button>
         <div>{likeNum}</div>
         {like? <div>true</div>:<div>false</div>}
-
         </div>
     )
 }

@@ -18,6 +18,7 @@ const BoardWrite = ({userInfo}) => {
             content,
             uid:userInfo.uid,
             name:userInfo.displayName,
+            views:0,
             time:new Date(),
             year:new Date().getFullYear(),
             month:new Date().getMonth()+1,
