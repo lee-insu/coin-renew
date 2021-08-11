@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 
 const Chatting = ({userInfo, board}) => {
    
     const [chat,setChat] = useState("");
-    const [reChat,setReChat] = useState("")
+    // const [reChat,setReChat] = useState("")
     const [comment,getComment] = useState([]);
-    const [reComment,getReComment] = useState([]);
-    const [active,setActive] =useState(false);
+    const [chatId,getchatId]=useState();
+    // const [active,setActive] =useState(false);
 
 
     
@@ -16,14 +15,13 @@ const Chatting = ({userInfo, board}) => {
         const {target:{name,value}} =e;
         if(name === "chat"){
         setChat(value);
-        }else if(name === "rechat") {
-            setReChat(value);
         }
+        // else if(name === "rechat") {
+        //     setReChat(value);
+        // }
     }
 
-
     const onSubmit = async (e) => {
-        console.log(e.target.name);
         e.preventDefault();
         try {
             alert("comment suc!");
@@ -37,21 +35,38 @@ const Chatting = ({userInfo, board}) => {
                 date: new Date().getDate()
             })
             setChat("");
-            
-            
-
+            // setActive(false);
         }catch(err) {
             console.log(err);
         }
+
+        //   try{
+        //     alert("recomment suc!");
+        //     await firestore.collection("chatting").doc(board).collection("messages").doc(chatId).collection("rechatting").add({
+        //         reChat,
+        //         chatUid:chatId,
+        //         name:userInfo.displayName,
+        //         uid:userInfo.uid,
+        //         time:new Date(),
+        //         year:new Date().getFullYear(),
+        //         month:new Date().getMonth()+1,
+        //         date: new Date().getDate()
+        //     })
+        //     setReChat("");
+        //     setActive(false);
+        //     console.log(chatId);
+        //   }catch(err){
+        //       console.log(err)
+        //   }  
+ 
         
     }
 
-    const onActive = e => {
-        e.preventDefault();
-        setActive(true);
-    }
+    // const onActive = cmtId => {
+    //     setActive(true);
+    //     getchatId(cmtId);
+    // }
 
-    console.log(active);
 
     const onDelete = async(cmtId,cmtUid) => {
         if(cmtUid === userInfo.uid){
@@ -65,8 +80,10 @@ const Chatting = ({userInfo, board}) => {
     }
 
     
-   
+   // 여기서 active 설정에 대한 문제 해답을 해야할듯
+   //정보 생성시 해당 uid를 정보에 넣고 update를 통해서 (where)을 사용해 해당 uid값이 있는 값을 출력
     useEffect(()=> {
+   
         firestore.collection("chatting").doc(board).collection("messages").orderBy('time')
         .onSnapshot(snapshot => {
             const array = snapshot.docs.map(doc => ({
@@ -75,23 +92,36 @@ const Chatting = ({userInfo, board}) => {
             }));
             getComment(array);
         })
-     
-       
+        // firestore.collection("chatting").doc(board).collection("messages").doc(chatId).collection("rechatting").orderBy('time')
+        //     .onSnapshot(snapshot => {
+        //     const array = snapshot.docs.map(doc => ({
+        //         id:doc.id,
+        //         ...doc.data(),
+        //     }));
+        //     getReComment(array);
+        // })
+
     },[])
 
 
+//    const reComments = reComment.map(recmt => 
+//    <li key={recmt.id}>
+//        <div>rechat</div>
+//        {recmt.reChat} writer:{recmt.name}
+//        <h3>{recmt.id}</h3>
+//    </li>) 
 
+   
     
    const comments = comment.map(cmt => 
-   <li key={cmt.id}>
+   <li key ={cmt.id}>
        {cmt.chat} writer:{cmt.name}
         <h3>{cmt.id}</h3> 
         <button onClick={()=>onDelete(cmt.id,cmt.uid)}>del</button>
-        <button onClick={onActive}>rechat</button>
-        </li>
+        {/* <button onClick={()=>onActive(cmt.id)}>rechat</button> */}
+        </li>  
    )
    
-
     return (
         <>
          <ul>
@@ -100,9 +130,12 @@ const Chatting = ({userInfo, board}) => {
           <form onSubmit ={onSubmit}>
             <input 
             type="text"
-            name ={!active ? "chat" : "rechat"}
-            placeholder={!active ? "please chat" : "please rechat" }
-            value={!active ? chat : reChat}
+            name = "chat"
+            placeholder="please chat"
+            value={chat}
+            // name ={!active ? "chat" : "rechat"}
+            // placeholder={!active ? "please chat" : "please rechat" }
+            // value={!active ? chat : reChat}
             onChange={onChange}
             />
             <input type="submit"/>

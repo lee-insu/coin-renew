@@ -51,8 +51,25 @@ const BoardView = ({login,userInfo}) => {
         if(del) {
             await fire.delete(); 
           if(del) {
-            await firestore.collection("chatting").doc(`${params.id}`).delete();
+            firestore.collection("chatting").doc(`${params.id}`).collection("messages").get()
+            .then((snap)=> {
+                const size = snap.size
+                for(let i = 0; i < size; i++){
+                    firestore.collection("chatting").doc(`${params.id}`).collection("messages").get()
+                    .then((e)=> {
+                        e.forEach((doc)=> {
+                            firestore.collection("chatting").doc(`${params.id}`).collection("messages").doc(doc.id).delete();
+                        })
+    
+                    })
+                }  
+            })
+            if(del) {
+                await firestore.collection("chatting").doc(`${params.id}`).delete();
+              }
           }
+          
+    
            alert('delete!');
             history.push('/board');
         }
