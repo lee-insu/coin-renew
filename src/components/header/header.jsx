@@ -14,7 +14,7 @@ const Header = ({login,userInfo}) => {
 
     return (
         <div className="header">
-        <div className="logo">코짖새</div>
+        <div className="logo"><Link to ="/">코인앵무새</Link></div>
         <nav>
             <ul>
                 <li>투자지표</li>

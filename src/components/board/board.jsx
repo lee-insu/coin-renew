@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import {firestore} from '../../service/firebase';
 import Search from '../search/search';
-import {useInView} from 'react-intersection-observer';
+
 
 
 const Board = ({login}) => {
@@ -50,8 +50,6 @@ const Board = ({login}) => {
                  setIsEmpty(true)
                }
             })
-         
-        
     }
 
 
