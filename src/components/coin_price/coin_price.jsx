@@ -90,7 +90,9 @@ const CoinPrice = () => {
                     <th>{(luna.signed_change_rate*100).toFixed(2)}</th>
                 </tr>
                 </>
-                :null}
+                :
+                <div>정보를 불러오고 있습니다..</div>
+                }
                
                
             </tbody>

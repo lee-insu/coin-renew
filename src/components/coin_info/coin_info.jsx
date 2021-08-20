@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CoinPrice from '../coin_price/coin_price';
+import Roulette from '../roulette/roulette';
 import SelectCoin from '../select_coin/select_coin';
 
 const CoinInfo = () => {
@@ -13,7 +14,10 @@ const CoinInfo = () => {
         .then(res => res.json())
         .then(async res => {
             const list = await res.map(coin => coin);
-            getCoin(list);  
+            const btcExpect = list.filter(e => {return e.market.indexOf('BTC-')});
+            const usdtExpect = btcExpect.filter(e => {return e.market.indexOf('USDT-')})
+
+            getCoin(usdtExpect);
         })
     },[])
   
@@ -23,6 +27,7 @@ const CoinInfo = () => {
         <>
         <SelectCoin coins = {coins}/>
         <CoinPrice/> 
+        <Roulette />
         </>
     )
 }

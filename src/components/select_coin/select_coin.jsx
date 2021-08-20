@@ -38,7 +38,7 @@ const SelectCoin = ({coins}) => {
         fetch(`https://api.upbit.com/v1/ticker?markets=${market}`)
         .then(res => res.json())
         .then(async res => {
-            await res.map(coin=> {
+            await res.map(coin => {
                 getPrice(coin.trade_price);
                 getChangeRate((coin.signed_change_rate*100).toFixed(2))
      
@@ -55,11 +55,13 @@ const SelectCoin = ({coins}) => {
         {result ? <div>result</div>:null}
         </h3>
         <button onClick={coinSelected} >{coin === null ? "코인랜덤뽑기":"다시뽑기"}</button>
+        {coin ? 
         <div>
             <div>{coin}</div>
-            {price % 1 === 0 && price > 0 ? <div>{price} 원</div>:<div>{price} BIT</div>}
+            <div>{price}원</div>
             <div>{changeRate}%</div>
             </div>
+            :null }
         </>
     )
 
